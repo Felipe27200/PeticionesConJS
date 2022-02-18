@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX-Simple</title>
+</head>
+<body>
+    <h1>LLAMADAS AL SERVIDOR</h1>
+    <pre>
+        <h3>Todas las peticiones realizadas
+    se hacen al servidor.</h3>
+
+        <b>El navegador hace la petición y recibe de forma directa los datos,
+        sin tener que refrescar la página para mostrar los cambios. Esto gracias
+        a las funciones de JS que procesan los datos.</b>
+    </pre>
+
+    <h2>Solicitar Información</h2>
+    <!--Realiza la llamada a la función, mediante el atributo
+    onclick="" que se ejecuta cuando se hace click sobre el elemento-->
+    <button onclick="helloWorld()">Hello World</button><br>
+    <hr>
+
+    <!--Botón para hacer una petición al servidor-->
+    <button onclick="sendRequest()"> Send Ajax Request </button>
+    <br><hr>
+
+    <h1 id="titulo"></h1>
+
+    <h2>Enviar Información</h2>
+    <button onclick="enviarDatos()">Enviar datos</button>
+    <h1 id='titulo2'></h1>
+
+    <!--Script con JS-->
+    <script>
+        // Imprime en consola el String
+        function helloWorld(){
+            console.log("Hola Mundo")
+        }
+
+        //Función que trae información del backend
+        // En este caso un archivo .php
+        function sendRequest(){
+            // Instanciar un objeto para obtener los datos de un .php externo
+            let objetoRequest = new XMLHttpRequest();
+            
+            // Aquí se hace la solicitud de los datos, por medio del método open()
+            /* 1. El primer argumento es el método http que será el tipo de petición,
+               en este caso como se quieren recibir datos se usa GET.
+               2. El segundo es la dirección a la cuál se le hará la petición
+            */
+            objetoRequest.open("GET", 'backend.php', true);
+
+            // Aquí se establece que tipo de contenido se quiere, el tipo de dato que se solicita
+            objetoRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            /* Se encarga de atrapar y ver lo que se está recibiendo desde el servidor.
+               Se le asigna una función que va a mostrar lo que se ha recibido en forma
+               de texto en la consola, esto gracias a la propiedad responseText */
+            objetoRequest.onreadystatechange = function (){
+                console.log(objetoRequest.responseText);
+
+                /*Aquí se le enviará a un elemento HTML lo que se ha recibido
+                
+                  Se usa la propiedad document para acceder a los elementos html, a través
+                  de su id (conn la función getElementById()), una vez se obtiene el elemento
+                  se le asigna un valor a través de su propiedad innerHTML que recibe en
+                  forma de texto los datos recibidos*/
+
+                document.getElementById('titulo').innerHTML = objetoRequest.responseText;
+            }
+            // Ejecuta la petición
+            objetoRequest.send();
+        }
+
+        /* Este método es similar al anterior, solo que envía información
+           y recibe un dato distinto al anterior método*/
+        function enviarDatos(){
+            let objetoRequest = new XMLHttpRequest();
+            
+            /* El método http se cambia a POST para que se envíe 
+               información al archivo */
+            objetoRequest.open("POST", 'backend.php', true);
+            objetoRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            objetoRequest.onreadystatechange = function (){
+                document.getElementById('titulo2').innerHTML = objetoRequest.responseText;
+            }
+            // Ejecuta la petición y se le envía un argumento, ya que la petición es POST
+            // y recibe información
+            objetoRequest.send('username=Felipe');
+        }
+    </script>
+</body>
+</html>
